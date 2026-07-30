@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — MediCare Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020617;--primary:#3B82F6;--primary-light:#60A5FA;--accent:#0EA5E9;--danger:#EF4444;--text:#F8FAFC;--muted:#94A3B8;--border:rgba(255,255,255,0.12);--border-hover:rgba(255,255,255,0.28)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bg-canvas{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse 80% 60% at 20% 40%,#1E3A8A22,transparent),radial-gradient(ellipse 60% 50% at 80% 15%,#0EA5E922,transparent),#020617}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:.12;animation:blobF ease-in-out infinite;z-index:-1;pointer-events:none}
+.b1{width:600px;height:600px;background:#3B82F6;top:-200px;left:-200px;animation-duration:12s}
+.b2{width:500px;height:500px;background:#0EA5E9;bottom:-150px;right:-150px;animation-duration:10s;animation-delay:-4s}
+@keyframes blobF{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(1.05)}}
+/* Card */
+.auth-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.13);border-radius:28px;padding:2.75rem;width:100%;max-width:420px;box-shadow:0 30px 70px rgba(0,0,0,0.6);position:relative;overflow:hidden}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)}
+.logo-wrap{text-align:center;margin-bottom:2rem}
+.logo-icon{width:52px;height:52px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem}
+.auth-title{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;text-align:center;margin-bottom:.35rem}
+.auth-sub{text-align:center;color:var(--muted);font-size:.875rem;margin-bottom:2rem}
+/* Inputs */
+.form-group{margin-bottom:1.25rem}
+label{display:block;font-size:.8rem;font-weight:500;color:var(--muted);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px}
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--muted);pointer-events:none}
+input[type=text],input[type=password],input[type=email],input[type=tel]{width:100%;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:14px;padding:12px 14px 12px 42px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:all .3s}
+input[type=text]:focus,input[type=password]:focus,input[type=email]:focus,input[type=tel]:focus{border-color:var(--primary);background:rgba(59,130,246,.1);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+input::placeholder{color:rgba(148,163,184,.5)}
+/* Btn */
+.btn-submit{width:100%;padding:13px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);color:#fff;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .3s;margin-top:.5rem;box-shadow:0 0 24px rgba(59,130,246,.4)}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(59,130,246,.6)}
+/* Error */
+.error-msg{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 14px;font-size:.85rem;color:#FCA5A5;margin-bottom:1rem;text-align:center}
+/* Link */
+.auth-link{text-align:center;margin-top:1.5rem;font-size:.875rem;color:var(--muted)}
+.auth-link a{color:var(--primary-light);font-weight:500;text-decoration:none}
+.auth-link a:hover{color:#fff}
+/* Divider */
+.divider{display:flex;align-items:center;gap:.75rem;margin:1.25rem 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider span{font-size:.75rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+
+<div class="auth-card">
+  <div class="logo-wrap">
+    <div class="logo-icon">🏥</div>
+    <h1 class="auth-title">Welcome Back</h1>
+    <p class="auth-sub">Sign in to your MediCare Pro account</p>
+  </div>
+
+  {% if status %}
+  <div class="error-msg">⚠ {{ status }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Username</label>
+      <div class="input-wrap">
+        <span class="input-icon">👤</span>
+        <input type="text" name="username" placeholder="Enter your username" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" name="pwrd" placeholder="Enter your password" required>
+      </div>
+    </div>
+    <button type="submit" class="btn-submit">Sign In →</button>
+  </form>
+
+  <div class="divider"><span>or</span></div>
+  <div class="auth-link">Don't have an account? <a href="{% url 'register' %}">Create one</a></div>
+  <div class="auth-link" style="margin-top:.5rem"><a href="{% url 'index' %}">← Back to Home</a></div>
+</div>
+
+<script>
+window.addEventListener('load',function(){
+  if(typeof gsap==='undefined') return;
+  gsap.from('.auth-card',{opacity:0,y:40,duration:.8,ease:'power3.out'});
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+</body>
+</html>

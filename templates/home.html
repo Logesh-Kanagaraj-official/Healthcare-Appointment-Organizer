@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — MediCare Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020617;--primary:#3B82F6;--primary-light:#60A5FA;--accent:#0EA5E9;--success:#22C55E;--warning:#F59E0B;--danger:#EF4444;--text:#F8FAFC;--muted:#94A3B8;--card:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.12)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-canvas{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse 80% 60% at 10% 40%,#1E3A8A1a,transparent),radial-gradient(ellipse 70% 50% at 85% 15%,#0EA5E91a,transparent),#020617}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.1;animation:blobF ease-in-out infinite;z-index:-1;pointer-events:none}
+.b1{width:700px;height:700px;background:#3B82F6;top:-200px;left:-200px;animation-duration:14s}
+.b2{width:550px;height:550px;background:#0EA5E9;bottom:-150px;right:-150px;animation-duration:11s;animation-delay:-5s}
+.b3{width:350px;height:350px;background:#6366F1;top:50%;left:50%;animation-duration:16s;animation-delay:-8s}
+@keyframes blobF{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(35px,-35px) scale(1.06)}66%{transform:translate(-22px,22px) scale(.95)}}
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:66px;background:rgba(2,6,23,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;justify-content:space-between;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--text);text-decoration:none}
+.logo-box{width:34px;height:34px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.nav-sub-txt{display:block;font-size:.6rem;font-weight:400;color:var(--muted);font-family:'Inter',sans-serif}
+.nav-right{display:flex;align-items:center;gap:.85rem}
+.nav-welcome{font-size:.85rem;color:var(--muted)}
+.nav-welcome strong{color:var(--text)}
+.nav-btn{padding:7px 18px;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.nav-btn-outline{border:1px solid var(--border);background:transparent;color:var(--muted)}
+.nav-btn-outline:hover{border-color:var(--primary);color:var(--primary-light)}
+.nav-btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#FCA5A5}
+.nav-btn-danger:hover{background:rgba(239,68,68,.25);color:#fff}
+/* LAYOUT */
+.page{padding-top:66px}
+.container{max-width:1200px;margin:0 auto;padding:1.75rem 2rem}
+/* WELCOME */
+.welcome-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.welcome-text h2{font-family:'Poppins',sans-serif;font-size:1.75rem;font-weight:700;margin-bottom:.25rem}
+.welcome-text p{color:var(--muted);font-size:.9rem}
+.quick-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.action-btn{padding:11px 22px;border-radius:14px;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;border:none}
+.action-primary{background:linear-gradient(135deg,#3B82F6,#0EA5E9);color:#fff;box-shadow:0 0 20px rgba(59,130,246,.35)}
+.action-primary:hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(59,130,246,.55);color:#fff}
+.action-ghost{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--text)}
+.action-ghost:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:var(--text);transform:translateY(-2px)}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.75rem}
+.stat-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1.5rem;display:flex;align-items:center;gap:1rem;transition:all .3s;cursor:default}
+.stat-card:hover{background:rgba(255,255,255,.09);border-color:rgba(59,130,246,.35);transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,0,0,.4)}
+.stat-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.ico-blue{background:rgba(59,130,246,.2)}
+.ico-green{background:rgba(34,197,94,.2)}
+.ico-amber{background:rgba(245,158,11,.2)}
+.ico-cyan{background:rgba(14,165,233,.2)}
+.stat-val{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;line-height:1;color:var(--text)}
+.stat-lbl{font-size:.75rem;color:var(--muted);margin-top:4px}
+/* CARDS SECTION */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+.section-ttl{font-size:1rem;font-weight:600;color:var(--text)}
+/* MY APPT CARDS */
+.appt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+.appt-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1.5rem;transition:all .3s;cursor:default}
+.appt-card:hover{background:rgba(255,255,255,.09);border-color:rgba(59,130,246,.35);transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,0,0,.4)}
+.appt-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.appt-avatar{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0}
+.status-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:100px;font-size:.75rem;font-weight:600}
+.chip-confirmed{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.35);color:#4ADE80}
+.chip-pending{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:#FCD34D}
+.chip-completed{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.35);color:#93C5FD}
+.appt-name{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:.25rem}
+.appt-doc{font-size:.82rem;color:var(--primary-light);font-weight:500}
+.appt-meta{margin-top:.85rem;display:flex;flex-direction:column;gap:.4rem}
+.appt-meta-row{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted)}
+.appt-meta-row span{color:var(--text)}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:1rem;display:block}
+.empty-title{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.empty-sub{font-size:.875rem}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<nav class="topnav">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">🏥</div>
+    <span>MediCare Pro<span class="nav-sub-txt">Appointment Management</span></span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-welcome">Hello, <strong>{{ session }}</strong> 👋</span>
+    <a href="{% url 'viewpat' %}" class="nav-btn nav-btn-outline">📋 My Appointments</a>
+    <a href="{% url 'logout' %}" class="nav-btn nav-btn-danger">↩ Logout</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="container">
+
+    <div class="welcome-row">
+      <div class="welcome-text">
+        <h2>Welcome Back 👋</h2>
+        <p>Manage your healthcare appointments efficiently.</p>
+      </div>
+      <div class="quick-actions">
+        <a href="{% url 'patent' %}" class="action-btn action-primary">📅 Book Appointment</a>
+        <a href="{% url 'viewpat' %}" class="action-btn action-ghost">📋 View All</a>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-ico ico-blue">📅</div>
+        <div><div class="stat-val">{{ total_appts|default:0 }}</div><div class="stat-lbl">Total Appointments</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico ico-green">🩺</div>
+        <div><div class="stat-val">{{ total_docs|default:0 }}</div><div class="stat-lbl">Doctors Visited</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico ico-cyan">⚡</div>
+        <div><div class="stat-val">Active</div><div class="stat-lbl">Account Status</div></div>
+      </div>
+    </div>
+
+    <div class="section-hdr">
+      <div class="section-ttl">📌 Recent Appointments</div>
+      <a href="{% url 'patent' %}" class="action-btn action-primary" style="padding:8px 18px;font-size:.8rem">+ New Appointment</a>
+    </div>
+
+    {% if recent_appts %}
+    <div class="appt-grid">
+      {% for appt in recent_appts %}
+      <div class="appt-card">
+        <div class="appt-card-header">
+          <div class="appt-avatar">{{ appt.fname|first|upper }}</div>
+          <span class="status-chip chip-confirmed">✓ Booked</span>
+        </div>
+        <div class="appt-name">{{ appt.fname }}</div>
+        <div class="appt-doc">🩺 Dr. {{ appt.docname }}</div>
+        <div class="appt-meta">
+          <div class="appt-meta-row">📅 Date: <span>{{ appt.patdt|date:"d M Y" }}</span></div>
+          <div class="appt-meta-row">⏰ Time: <span>{{ appt.patdt|date:"h:i A" }}</span></div>
+          <div class="appt-meta-row">📋 Purpose: <span>{{ appt.prpse }}</span></div>
+          <div class="appt-meta-row">📱 Mobile: <span>{{ appt.mobno }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <div class="empty-title">No appointments yet</div>
+      <div class="empty-sub">Book your first appointment to get started</div>
+      <br>
+      <a href="{% url 'patent' %}" class="action-btn action-primary" style="display:inline-flex;margin-top:1rem">📅 Book Now</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+window.addEventListener('load',function(){
+  if(typeof gsap==='undefined') return;
+  gsap.from('.welcome-row',{opacity:0,y:20,duration:.6,ease:'power3.out'});
+  gsap.from('.stat-card',{opacity:0,y:15,duration:.5,stagger:.08,delay:.1,ease:'power3.out'});
+  gsap.from('.appt-card',{opacity:0,y:15,duration:.5,stagger:.08,delay:.2,ease:'power3.out'});
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+</body>
+</html>

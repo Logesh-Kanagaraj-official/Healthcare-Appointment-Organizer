@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Appointments — MediCare Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020617;--primary:#3B82F6;--primary-light:#60A5FA;--accent:#0EA5E9;--success:#22C55E;--text:#F8FAFC;--muted:#94A3B8;--card:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.12)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-canvas{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse 80% 60% at 10% 40%,#1E3A8A18,transparent),radial-gradient(ellipse 60% 50% at 80% 15%,#0EA5E918,transparent),#020617}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:.1;animation:blobF ease-in-out infinite;z-index:-1;pointer-events:none}
+.b1{width:600px;height:600px;background:#3B82F6;top:-200px;left:-200px;animation-duration:12s}
+.b2{width:500px;height:500px;background:#0EA5E9;bottom:-150px;right:-150px;animation-duration:10s;animation-delay:-4s}
+@keyframes blobF{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(1.05)}}
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:66px;background:rgba(2,6,23,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2rem;justify-content:space-between;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;color:var(--text);text-decoration:none}
+.logo-box{width:34px;height:34px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-sub-txt{display:block;font-size:.6rem;font-weight:400;color:var(--muted)}
+.nav-right{display:flex;gap:.75rem;align-items:center}
+.nav-btn{padding:7px 18px;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted)}
+.nav-btn:hover{border-color:var(--primary);color:var(--primary-light)}
+/* PAGE */
+.page{padding:80px 2rem 2rem;max-width:1200px;margin:0 auto}
+.page-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+.page-title{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:.2rem}
+.page-sub{color:var(--muted);font-size:.875rem}
+.hdr-actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.search-box{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:14px;padding:9px 16px 9px 38px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:all .3s;width:220px;position:relative}
+.search-box:focus{border-color:var(--primary);background:rgba(59,130,246,.1);width:260px}
+.search-box::placeholder{color:rgba(148,163,184,.45)}
+.search-wrap{position:relative}
+.search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.85rem;color:var(--muted);pointer-events:none}
+.btn-new{padding:9px 20px;border-radius:14px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;background:linear-gradient(135deg,#3B82F6,#0EA5E9);color:#fff;border:none;box-shadow:0 0 20px rgba(59,130,246,.35);display:inline-flex;align-items:center;gap:6px}
+.btn-new:hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(59,130,246,.55);color:#fff}
+/* TABLE GLASS */
+.table-glass{background:rgba(255,255,255,.05);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+table{width:100%;border-collapse:collapse}
+thead{background:rgba(59,130,246,.15);backdrop-filter:blur(10px)}
+th{padding:14px 18px;text-align:left;font-size:.73rem;font-weight:600;color:var(--primary-light);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;border-bottom:1px solid rgba(59,130,246,.25)}
+td{padding:15px 18px;font-size:.875rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle;transition:all .3s}
+tbody tr{transition:all .3s}
+tbody tr:hover td{background:rgba(59,130,246,.06);color:var(--text);transform:scale(1.002)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.hidden{display:none}
+/* Avatar */
+.pat-cell{display:flex;align-items:center;gap:10px}
+.pat-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3B82F6,#6366F1);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}
+.pat-name{font-weight:600;color:var(--text);font-size:.875rem}
+/* Chip */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:600;white-space:nowrap}
+.chip-booked{background:rgba(34,197,94,.13);border:1px solid rgba(34,197,94,.3);color:#4ADE80}
+.chip-doc{background:rgba(59,130,246,.13);border:1px solid rgba(59,130,246,.3);color:#93C5FD}
+/* Empty */
+.empty-state{text-align:center;padding:5rem 2rem;color:var(--muted)}
+.empty-icon{font-size:3.5rem;display:block;margin-bottom:1rem}
+.empty-ttl{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+/* Summary bar */
+.summary-bar{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.summary-pill{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.75rem 1.25rem;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.summary-pill strong{color:var(--text);font-size:1rem}
+@media(max-width:768px){.page{padding:85px 1rem 2rem}.search-box{width:100%}.hdr-actions{width:100%}}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+
+<nav class="topnav">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">🏥</div>
+    <span>MediCare Pro<span class="nav-sub-txt">My Appointments</span></span>
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'home' %}" class="nav-btn">← Dashboard</a>
+    <a href="{% url 'logout' %}" class="nav-btn">↩ Logout</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-hdr">
+    <div>
+      <h1 class="page-title">📋 My Appointments</h1>
+      <p class="page-sub">All your scheduled doctor appointments in one place</p>
+    </div>
+    <div class="hdr-actions">
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input class="search-box" type="text" id="srch" placeholder="Search appointments…" onkeyup="filterRows()">
+      </div>
+      <a href="{% url 'patent' %}" class="btn-new">+ New Appointment</a>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-pill">📅 Total: <strong>{{ data|length }}</strong> appointments</div>
+  </div>
+
+  <div class="table-glass">
+    <table>
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Mobile</th>
+          <th>Email</th>
+          <th>Doctor</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Purpose</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="apptTable">
+        {% for i in data %}
+        <tr>
+          <td>
+            <div class="pat-cell">
+              <div class="pat-avatar">{{ i.fname|first|upper }}</div>
+              <div class="pat-name">{{ i.fname }}</div>
+            </div>
+          </td>
+          <td>{{ i.mobno }}</td>
+          <td>{{ i.email }}</td>
+          <td><span class="chip chip-doc">🩺 Dr. {{ i.docname }}</span></td>
+          <td>{{ i.patdt|date:"d M Y" }}</td>
+          <td>{{ i.patdt|date:"h:i A" }}</td>
+          <td>{{ i.prpse }}</td>
+          <td><span class="chip chip-booked">✓ Booked</span></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <span class="empty-icon">📭</span>
+              <div class="empty-ttl">No appointments yet</div>
+              <p>Book your first appointment to see it here</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+window.addEventListener('load',function(){
+  if(typeof gsap==='undefined') return;
+  gsap.from('.page-hdr',{opacity:0,y:20,duration:.6,ease:'power3.out'});
+  gsap.from('.table-glass',{opacity:0,y:20,duration:.6,delay:.15,ease:'power3.out'});
+});
+function filterRows(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  document.querySelectorAll('#apptTable tr').forEach(r=>{
+    r.classList.toggle('hidden',!r.textContent.toLowerCase().includes(q));
+  });
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+</body>
+</html>

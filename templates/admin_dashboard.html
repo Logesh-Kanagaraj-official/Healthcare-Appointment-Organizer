@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — MediCare Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#020617;--bg2:#0F172A;
+  --primary:#3B82F6;--primary-light:#60A5FA;--accent:#0EA5E9;
+  --success:#22C55E;--warning:#F59E0B;--danger:#EF4444;
+  --text:#F8FAFC;--muted:#94A3B8;
+  --card:rgba(255,255,255,0.055);--card-h:rgba(255,255,255,0.09);
+  --border:rgba(255,255,255,0.11);--border-h:rgba(59,130,246,0.45);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── ANIMATED BACKGROUND ─────────────────── */
+.bg-canvas{position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(ellipse 90% 70% at 5% 35%,rgba(30,58,138,.25),transparent),
+    radial-gradient(ellipse 70% 60% at 90% 10%,rgba(14,165,233,.18),transparent),
+    radial-gradient(ellipse 60% 50% at 50% 90%,rgba(37,99,235,.12),transparent),
+    #020617}
+.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.13;animation:blobF ease-in-out infinite;z-index:-1;pointer-events:none}
+.b1{width:800px;height:800px;background:#1D4ED8;top:-250px;left:-250px;animation-duration:16s}
+.b2{width:650px;height:650px;background:#0284C7;bottom:-200px;right:-200px;animation-duration:13s;animation-delay:-6s}
+.b3{width:450px;height:450px;background:#4F46E5;top:40%;left:38%;animation-duration:19s;animation-delay:-9s}
+@keyframes blobF{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-40px) scale(1.06)}66%{transform:translate(-25px,25px) scale(.94)}}
+/* noise */
+body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── TOP NAVBAR ───────────────────────────── */
+.topnav{position:fixed;top:0;left:0;right:0;height:68px;background:rgba(2,6,23,.9);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2.5rem;justify-content:space-between;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:12px;font-family:'Poppins',sans-serif;font-weight:700;font-size:1.05rem;color:var(--text);text-decoration:none}
+.logo-box{width:38px;height:38px;background:linear-gradient(135deg,#3B82F6,#0EA5E9);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 0 18px rgba(59,130,246,.5)}
+.logo-sub{display:block;font-size:.6rem;font-weight:400;color:var(--muted);font-family:'Inter',sans-serif;letter-spacing:.3px}
+.nav-search{position:relative;display:flex;align-items:center}
+.nav-search-ico{position:absolute;left:14px;color:var(--muted);font-size:.85rem;pointer-events:none}
+.nav-search input{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:100px;padding:8px 18px 8px 38px;color:var(--text);font-family:'Inter',sans-serif;font-size:.83rem;outline:none;width:260px;transition:all .3s}
+.nav-search input:focus{border-color:var(--primary);background:rgba(59,130,246,.1);width:300px;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.nav-search input::placeholder{color:rgba(148,163,184,.45)}
+.nav-right{display:flex;align-items:center;gap:.85rem}
+.nav-badge{display:flex;align-items:center;gap:6px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:100px;padding:5px 14px;font-size:.78rem;color:var(--primary-light);font-weight:500}
+.nav-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#3B82F6,#6366F1);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;cursor:pointer}
+.btn-logout{padding:7px 18px;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.28);color:#FCA5A5}
+.btn-logout:hover{background:rgba(239,68,68,.22);color:#fff;transform:translateY(-1px)}
+
+/* ── LAYOUT ───────────────────────────────── */
+.page{padding-top:68px;min-height:100vh}
+.container{max-width:1350px;margin:0 auto;padding:1.75rem 2rem}
+
+/* ── WELCOME ──────────────────────────────── */
+.welcome-strip{margin-bottom:1.5rem}
+.welcome-strip h1{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:.3rem}
+.welcome-strip p{color:var(--muted);font-size:.9rem}
+
+/* ── STAT CARDS ───────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem}
+.stat-card{background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:1.6rem;display:flex;align-items:center;gap:1.1rem;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+.stat-card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateY(-4px);box-shadow:0 20px 45px rgba(0,0,0,.45),0 0 0 1px rgba(59,130,246,.15)}
+.stat-ico{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.ico-b{background:rgba(59,130,246,.18)}
+.ico-g{background:rgba(34,197,94,.18)}
+.ico-c{background:rgba(14,165,233,.18)}
+.ico-p{background:rgba(99,102,241,.18)}
+.stat-val{font-family:'Poppins',sans-serif;font-size:2rem;font-weight:700;line-height:1;color:var(--text)}
+.stat-lbl{font-size:.73rem;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+
+/* ── TABS ─────────────────────────────────── */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.75rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:5px;width:fit-content}
+.tab{padding:8px 20px;border-radius:12px;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--muted);transition:all .3s;border:none;background:transparent;font-family:'Inter',sans-serif}
+.tab.active{background:rgba(59,130,246,.2);color:var(--primary-light);border:1px solid rgba(59,130,246,.3)}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.06)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── SECTION HEADER ───────────────────────── */
+.sect-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem}
+.sect-title{font-size:1rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.sect-actions{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative}
+.search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.85rem;color:var(--muted);pointer-events:none}
+.table-search{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:14px;padding:9px 16px 9px 36px;color:var(--text);font-family:'Inter',sans-serif;font-size:.83rem;outline:none;width:220px;transition:all .3s}
+.table-search:focus{border-color:var(--primary);background:rgba(59,130,246,.09);width:260px;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.table-search::placeholder{color:rgba(148,163,184,.4)}
+.btn-new-appt{padding:9px 20px;border-radius:14px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;background:linear-gradient(135deg,#3B82F6,#0EA5E9);color:#fff;border:none;box-shadow:0 0 18px rgba(59,130,246,.35);display:inline-flex;align-items:center;gap:6px}
+.btn-new-appt:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(59,130,246,.55);color:#fff}
+
+/* ── GLASS TABLE ──────────────────────────── */
+.glass-table-wrap{background:rgba(255,255,255,.04);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.glass-table-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);z-index:1}
+table{width:100%;border-collapse:collapse}
+thead{background:rgba(59,130,246,.12)}
+th{padding:14px 18px;text-align:left;font-size:.71rem;font-weight:600;color:var(--primary-light);text-transform:uppercase;letter-spacing:.9px;white-space:nowrap;border-bottom:1px solid rgba(59,130,246,.2)}
+td{padding:15px 18px;font-size:.855rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.045);vertical-align:middle}
+tbody tr{transition:all .25s;cursor:default}
+tbody tr:hover td{background:rgba(59,130,246,.07);color:var(--text)}
+tbody tr:hover{transform:scaleX(1.002);box-shadow:inset 0 0 0 1px rgba(59,130,246,.15)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.hidden{display:none}
+
+/* ── CELLS ────────────────────────────────── */
+.pat-cell{display:flex;align-items:center;gap:10px}
+.pat-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}
+.av-blue{background:linear-gradient(135deg,#3B82F6,#6366F1)}
+.av-cyan{background:linear-gradient(135deg,#0EA5E9,#06B6D4)}
+.av-green{background:linear-gradient(135deg,#22C55E,#16A34A)}
+.av-purple{background:linear-gradient(135deg,#8B5CF6,#6D28D9)}
+.pat-name{font-weight:600;color:var(--text);font-size:.875rem}
+.pat-uname{font-size:.73rem;color:var(--muted)}
+
+/* ── CHIPS ────────────────────────────────── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:600;white-space:nowrap}
+.chip-booked{background:rgba(34,197,94,.13);border:1px solid rgba(34,197,94,.3);color:#4ADE80}
+.chip-pending{background:rgba(245,158,11,.13);border:1px solid rgba(245,158,11,.3);color:#FCD34D}
+.chip-doc{background:rgba(59,130,246,.13);border:1px solid rgba(59,130,246,.3);color:#93C5FD}
+.chip-admin{background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.3);color:#FCA5A5}
+.chip-user{background:rgba(14,165,233,.13);border:1px solid rgba(14,165,233,.3);color:#7DD3FC}
+
+/* ── EMPTY ────────────────────────────────── */
+.empty-row td{text-align:center;padding:4rem;color:var(--muted);font-size:.9rem}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media(max-width:768px){
+  .topnav{padding:0 1rem}
+  .nav-search{display:none}
+  .container{padding:1.5rem 1rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .tabs{width:100%}
+  td,th{padding:12px 12px;font-size:.78rem}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr}
+  .tabs{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<!-- ── TOP NAVBAR ───────────────────────────── -->
+<nav class="topnav">
+  <a class="nav-logo" href="{% url 'admin_dashboard' %}">
+    <div class="logo-box">🏥</div>
+    <span>MediCare Pro<span class="logo-sub">Admin Control Panel</span></span>
+  </a>
+
+  <div class="nav-search">
+    <span class="nav-search-ico">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search anything…" onkeyup="globalFilter()">
+  </div>
+
+  <div class="nav-right">
+    <span class="nav-badge">⚡ Admin Mode</span>
+    <div class="nav-avatar">{{ admin_name|first|upper }}</div>
+    <a href="{% url 'logout' %}" class="btn-logout">↩ Logout</a>
+  </div>
+</nav>
+
+<!-- ── MAIN PAGE ─────────────────────────────── -->
+<div class="page">
+  <div class="container">
+
+    <!-- Welcome -->
+    <div class="welcome-strip">
+      <h1>Welcome Back, {{ admin_name }} 👋</h1>
+      <p>Here's everything happening in the system today. Manage appointments and users below.</p>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-ico ico-b">📅</div>
+        <div><div class="stat-val">{{ total_appointments }}</div><div class="stat-lbl">Total Appointments</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico ico-g">👥</div>
+        <div><div class="stat-val">{{ total_users }}</div><div class="stat-lbl">Registered Users</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico ico-c">🩺</div>
+        <div><div class="stat-val">{{ total_doctors }}</div><div class="stat-lbl">Unique Doctors</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico ico-p">📈</div>
+        <div>
+          <div class="stat-val">{% if latest_date %}{{ latest_date|date:"d M" }}{% else %}—{% endif %}</div>
+          <div class="stat-lbl">Latest Booking</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('appts',this)">📅 All Appointments</button>
+      <button class="tab" onclick="switchTab('users',this)">👥 Users</button>
+    </div>
+
+    <!-- ── TAB: APPOINTMENTS ───────────────── -->
+    <div id="tab-appts" class="tab-content active">
+      <div class="sect-hdr">
+        <div class="sect-title">📋 Booking History <span style="color:var(--muted);font-weight:400;font-size:.82rem">({{ total_appointments }} total)</span></div>
+        <div class="sect-actions">
+          <div class="search-wrap">
+            <span class="search-ico">🔍</span>
+            <input class="table-search" type="text" id="apptSearch" placeholder="Search appointments…" onkeyup="filterTable('apptSearch','apptBody')">
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient</th>
+              <th>Booked By</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Time (IST)</th>
+              <th>Purpose</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="apptBody">
+            {% for appt in appointments %}
+            {% with colors="av-blue av-cyan av-green av-purple" %}
+            <tr>
+              <td style="color:var(--muted);font-size:.78rem">{{ appt.id }}</td>
+              <td>
+                <div class="pat-cell">
+                  <div class="pat-avatar av-blue">{{ appt.fname|first|upper }}</div>
+                  <div>
+                    <div class="pat-name">{{ appt.fname }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="chip chip-user">👤 {{ appt.uname }}</span></td>
+              <td>{{ appt.mobno }}</td>
+              <td style="font-size:.8rem">{{ appt.email }}</td>
+              <td><span class="chip chip-doc">🩺 Dr. {{ appt.docname }}</span></td>
+              <td>{{ appt.patdt|date:"d M Y" }}</td>
+              <td>{{ appt.patdt|date:"h:i A" }}</td>
+              <td>{{ appt.prpse }}</td>
+              <td><span class="chip chip-booked">✓ Booked</span></td>
+            </tr>
+            {% endwith %}
+            {% empty %}
+            <tr class="empty-row"><td colspan="10">No appointments found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── TAB: USERS ──────────────────────── -->
+    <div id="tab-users" class="tab-content">
+      <div class="sect-hdr">
+        <div class="sect-title">👥 Registered Users <span style="color:var(--muted);font-weight:400;font-size:.82rem">({{ total_users }} total)</span></div>
+        <div class="sect-actions">
+          <div class="search-wrap">
+            <span class="search-ico">🔍</span>
+            <input class="table-search" type="text" id="userSearch" placeholder="Search users…" onkeyup="filterTable('userSearch','userBody')">
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="userBody">
+            {% for user in users %}
+            <tr>
+              <td style="color:var(--muted);font-size:.78rem">{{ user.id }}</td>
+              <td>
+                <div class="pat-cell">
+                  <div class="pat-avatar av-cyan">{{ user.uname|first|upper }}</div>
+                  <div class="pat-name">{{ user.uname }}</div>
+                </div>
+              </td>
+              <td style="font-size:.82rem">{{ user.email }}</td>
+              <td>{{ user.mobno }}</td>
+              <td>
+                {% if user.is_admin %}
+                  <span class="chip chip-admin">⚡ Admin</span>
+                {% else %}
+                  <span class="chip chip-user">👤 User</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="5">No users registered yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+window.addEventListener('load',function(){
+  if(typeof gsap==='undefined') return;
+  gsap.from('.welcome-strip',{opacity:0,y:20,duration:.6,ease:'power3.out'});
+  gsap.from('.stat-card',{opacity:0,y:15,duration:.5,stagger:.08,delay:.1,ease:'power3.out'});
+  gsap.from('.tabs',{opacity:0,y:15,duration:.5,delay:.25,ease:'power3.out'});
+  gsap.from('.glass-table-wrap',{opacity:0,y:20,duration:.6,delay:.35,ease:'power3.out'});
+});
+function switchTab(id,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(typeof gsap!=='undefined') gsap.from('#tab-'+id+' .glass-table-wrap',{opacity:0,y:15,duration:.4,ease:'power3.out'});
+}
+function filterTable(inputId,bodyId){
+  const q=document.getElementById(inputId).value.toLowerCase();
+  document.querySelectorAll('#'+bodyId+' tr').forEach(r=>{
+    r.classList.toggle('hidden',!r.textContent.toLowerCase().includes(q));
+  });
+}
+function globalFilter(){
+  const q=document.getElementById('globalSearch').value.toLowerCase();
+  ['apptBody','userBody'].forEach(bid=>{
+    document.querySelectorAll('#'+bid+' tr').forEach(r=>{
+      r.classList.toggle('hidden',q&&!r.textContent.toLowerCase().includes(q));
+    });
+  });
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+</body>
+</html>
